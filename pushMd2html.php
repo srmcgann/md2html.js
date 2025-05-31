@@ -1,3 +1,5 @@
+<?
+$file = <<<'FILE'
 // 'md2html.js', a Markdown converter
 // Scott McGann - whitehotrobot@gmail.com
 // all rights reserved - ©2025
@@ -147,3 +149,7 @@ const Convert = (src, el='') => {
 export {
   Convert
 }
+
+
+FILE;
+file_put_contents('../../md2html.js/md2html.js', $file);
