@@ -18,37 +18,21 @@ const Convert = (src, el='') => {
       var isLi = false
       var tok1 = line.split(' ')
       if(tok1.length > 0){
+        for(var i = 1e4; i--;) if(tok1[0] == `${i+1}.`) {
+          tagName = `ol start="${i+1}"`
+          isLi = true
+        }
         switch(tok1[0]){
           case '>': tagName = 'blockquote'; break
-          case '#': tagName = 'H1'; break
           case '`code`': tagName = 'code'; break
           case '---': tagName = 'hr'; break
           case '-': tagName = 'ul'; isLi=true; break
-          case '1.': tagName = `ol start=\"1\"}`; isLi=true; break
-          case '2.': tagName = `ol start=\"2\"}`; isLi=true; break
-          case '3.': tagName = `ol start=\"3\"}`; isLi=true; break
-          case '4.': tagName = `ol start=\"4\"}`; isLi=true; break
-          case '5.': tagName = `ol start=\"5\"}`; isLi=true; break
-          case '6.': tagName = `ol start=\"6\"}`; isLi=true; break
-          case '7.': tagName = `ol start=\"7\"}`; isLi=true; break
-          case '8.': tagName = `ol start=\"8\"}`; isLi=true; break
-          case '9.': tagName = `ol start=\"9\"}`; isLi=true; break
-          case '10.': tagName = `ol start=\"10\"}`; isLi=true; break
-          case '11.': tagName = `ol start=\"11\"}`; isLi=true; break
-          case '12.': tagName = `ol start=\"12\"}`; isLi=true; break
-          case '13.': tagName = `ol start=\"13\"}`; isLi=true; break
-          case '14.': tagName = `ol start=\"14\"}`; isLi=true; break
-          case '15.': tagName = `ol start=\"15\"}`; isLi=true; break
-          case '16.': tagName = `ol start=\"16\"}`; isLi=true; break
-          case '17.': tagName = `ol start=\"17\"}`; isLi=true; break
-          case '18.': tagName = `ol start=\"18\"}`; isLi=true; break
-          case '19.': tagName = `ol start=\"19\"}`; isLi=true; break
-          case '20.': tagName = `ol start=\"20\"}`; isLi=true; break
+          case '#': tagName = 'H1'; break
           case '##': tagName = 'H2'; break
           case '###': tagName = 'H3'; break
           case '####': tagName = 'H4'; break
           case '#####': tagName = 'H5'; break
-          default: skipShift = true; break
+          default: if(!isLi) skipShift = true; break
         }
         if(!skipShift) tok1.shift()
         line = tok1.join(' ')
@@ -149,7 +133,6 @@ const Convert = (src, el='') => {
 export {
   Convert
 }
-
 
 FILE;
 file_put_contents('../../md2html.js/md2html.js', $file);
