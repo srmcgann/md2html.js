@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="./highlight.js/default.min.css">
+    <script src="./highlight.js/highlight.min.js"></script>
+  </head>
+  <body>
+    <pre class="language-javascript"><code>
+// 'Coordinates', a webgl framework
+// Scott McGann - whitehotrobot@gmail.com
+// all rights reserved - ©2025
+
+const ModuleBase = 'https://srmcgann.github.io/Coordinates'
+
+// includes
+import * as Hash from "https://srmcgann.github.io/GenHash/hash.js"
+
+const zipScript = document.createElement('script')
+await zipScript.setAttribute('src', ModuleBase + '/zip.js')
+await document.body.appendChild(zipScript)
+
+const S = Math.sin, C = Math.cos, Rn = Math.random
+
+var audioConsent = false
+//new OffscreenCanvas(256, 256); * might be superior
+const scratchCanvas = document.createElement('canvas')
+const sctx = scratchCanvas.getContext('2d', {
+    alpha                   : true,
+    antialias               : true,
+    imageSmoothingEnabled   : true,
+    desynchronized          : true,
+    premultipliedAlpha      : false
+  }
+)
+    </code></pre>
+    <script>
+      hljs.highlightAll()
+    </script>
+  </body>
+</html>
+
