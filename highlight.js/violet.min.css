@@ -42,6 +42,9 @@ pre code.hljs {
 
 code.hljs {
   padding: 3px 5px;
+  background: #112;
+  border-radius: 10px;
+  line-height: 0;
 }
 
 .hljs {
@@ -175,3 +178,4 @@ code.hljs {
 .hljs-meta-keyword {
   font-weight: bold;
 }
+
