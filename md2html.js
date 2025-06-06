@@ -2,17 +2,17 @@
 // Scott McGann - whitehotrobot@gmail.com
 // all rights reserved - ©2025
 
-const MaxLinesPerPage = 20000
+const MaxLinesPerPage = 1e5;
 
-const Convert = (src, curPage=0) => {
-  console.log('curPage: ', curPage)
-  var linePos = 0;
+const Convert = (src, curPage=0, navEl = '', contEl = '') => {
+  var linePos = 0, pageCt = 0;
   var wSrc = src.replaceAll("\r\n", "\n")
   var wSrc = wSrc.replaceAll("<br>", "\n")
-  var ret = '', inCodeBlock = false
+  var ret = '', inCodeBlock = false, pageBreakRequested = false
   
-  const pageFilter = () => (!curPage || (linePos < curPage*MaxLinesPerPage &&
-                     linePos >= (curPage-1)*MaxLinesPerPage))
+  const pageFilter = () => curPage == pageCt+1
+  const totalPages = () => src.split("&lt;pagebreak").length
+  
   src.split("\n").forEach(line => {
     if(inCodeBlock){
       if(line.substr(0, 3) == '```'){
@@ -23,7 +23,46 @@ const Convert = (src, curPage=0) => {
       }
     }else if(line){
       line = line.replaceAll('&lt;','<')
-      if(line.substr(0, 5) == '```js'){
+      if(pageBreakRequested){
+        pageBreakRequested = false
+        pageCt++
+        if(pageFilter()){
+          if(navEl && contEl) {
+            setTimeout(()=>{
+              if(document.querySelectorAll('#md2html_nav').length == 0){
+                var apEl = navEl.cloneNode(true)
+                apEl.id = "md2html_nav"
+                apEl.style.float = 'none'
+                apEl.style.left = '50%'
+                apEl.style.transform = 'translate(-50%)'
+                contEl.innerHTML += '<br><br><br><br><br><center><span style="color: #888;">'+(totalPages() == curPage ? 'end of document' : 'continued on the next page...')+'</span><br><br><br>'
+                contEl.appendChild(apEl)
+              }
+            }, 0)
+          }
+        }
+      }
+      if(line.substr(0, 10) == '<pagebreak'){
+        tagName = ''
+        closingTag = ''
+        pageBreakRequested = true
+        if(curPage == 1 && pageFilter()){
+          ret += '<br><br><br><br><br><center><span style="color: #888;">continued on the next page...</span><br><br><br>'
+          if(navEl && contEl) {
+            setTimeout(()=>{
+              if(document.querySelectorAll('#md2html_nav').length == 0){
+                var apEl = navEl.cloneNode(true)
+                apEl.id = "md2html_nav"
+                apEl.style.float = 'none'
+                apEl.style.left = '50%'
+                apEl.style.transform = 'translate(-50%)'
+                contEl.appendChild(apEl)
+              }
+            }, 0)
+          }
+          ret += '</center>'
+        }
+      }else if(line.substr(0, 5) == '```js'){
         ret += pageFilter() ? '<pre><code language="javascript" style="line-height: initial;">' : ''
         inCodeBlock = true
       }else if(line.substr(0, 3) == '```'){
@@ -33,7 +72,7 @@ const Convert = (src, curPage=0) => {
         var fontSize = "1em"
         //var tagName = '<div>'
         //var closingTag = '</div>'
-        var tagName = ''
+        var tagName = line.indexOf('<') == -1 && line.indexOf('>') == -1 ? '' : ''
         var closingTag = ''
         var skipShift = false
         var isLi = false
@@ -86,7 +125,7 @@ const Convert = (src, curPage=0) => {
             if(tog) s += chr
             if(!tog && chr == ')') {
               s+=`<img title="${links[ct].title}"
-                   style="max-width: 400px; margin: 10px;"
+                   style="max-width: 600px; margin: 10px;"
                    src="${links[ct].url}"
                    alt="${links[ct].title}"/>`
               tog = true
@@ -175,12 +214,14 @@ const Convert = (src, curPage=0) => {
   })
   return {
     html: ret, 
-    totalPages: linePos / MaxLinesPerPage | 0
+    totalPages: totalPages()
   }
 }
 
 export {
   Convert
 }
+
+
 
 
